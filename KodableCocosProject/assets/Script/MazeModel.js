@@ -33,23 +33,37 @@ var mazeModel = cc.Class({
 module.exports = {
     maze: [[]],
 
-    loadMaze: function(url, scope){
-        console.log("load maze - " + scope.maze);
+    initMazeNode: function(res, mazeWidth, i, col, row){
+        var nodeWidth = 3;
+        var newNode = {};
+        newNode.col = col;
+        newNode.row = row;
+        newNode.topWall = res[i + 1] == "-"
+        newNode.leftWall = res[i + mazeWidth] == "|";
+        newNode.rightWall = res[i + mazeWidth + nodeWidth] == "|";
+        newNode.bottomWall = res[i + (mazeWidth * 2) + 1] == "-";
+        return newNode;
+
+    },
+
+    loadMaze: function(url, modelScope){
 
         var filePath = cc.url.raw("resources/maze.txt");
         cc.loader.load( filePath, function( err, res)
         {
+            var newMaze = [[]];
             if(err == null)
             {
                 console.log(res);
                 //populate maze model
                 var i = 0;
                 var mazeWidthFinished = false;
-                var newMaze = [[]];
+                
                 var mazeWidth = 0;
                 var mazeHeight = 0;
+                
                 var currentRow = 0;
-                while(i < res.length)
+                while(i < res.length - mazeWidth)
                 {
                     if(!mazeWidthFinished && res[i] == " ")
                     {
@@ -60,7 +74,9 @@ module.exports = {
                     switch(res[i]){
                         case "+":
                             mazeWidth++;
-                            newMaze[currentRow].push(0);
+                            var currentCol = newMaze[currentRow].length - 1;
+                            newMaze[currentRow].push(modelScope.initMazeNode(res, mazeWidth, i, currentCol, currentRow));
+
                             break;
                         case " ": 
                             //if we are at the end of a row, and not at the end of the maze, and on an even number row
@@ -73,12 +89,14 @@ module.exports = {
                         
                     i++;
                 }
-                scope.maze = newMaze;
+                
             }
             else
             {
                 console.log(err);
             }
+            modelScope.maze = newMaze;            
+            
         });
     }
 }

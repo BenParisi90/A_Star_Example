@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-var MazeModel = require('MazeModel');
+var MazeModel = require("MazeModel");
 
 cc.Class({
     extends: cc.Component,
@@ -35,11 +35,13 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},
+
+    ctor() {
+        
+    },
     
     start () {
-        console.log("MazeModel = " + MazeModel);
         MazeModel.loadMaze("resources/maze.txt", MazeModel);
-        console.log(MazeModel.maze);
     },
 
     // update (dt) {},
