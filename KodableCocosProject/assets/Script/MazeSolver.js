@@ -34,10 +34,9 @@ cc.Class({
         this.iteratePathfinding = function()
         {
             var current = this.lowestFNode(this.open);
-            this.mazeView.turnOn(current.col, current.row);
+            this.mazeView.turnOn(current.col, current.row, this.mazeView.floorPrefab);
             this.moveNodeToClosed(current);
-
-            console.log("current = " + current.col + "," + current.row);
+            //console.log("current = " + current.col + "," + current.row);
 
             if(current == this.mazeModel.endNode){
                 console.log("path to end node found");
@@ -64,7 +63,12 @@ cc.Class({
         };
 
         this.retracePath = function(targetNode){
-            //this.mazeView.
+            this.mazeView.turnOn(targetNode.col, targetNode.row, this.mazeView.retracePrefab);
+            if(targetNode == this.mazeModel.startNode){
+                console.log("found way back to start!");
+                this.state = "animateCharacter";
+            }
+            this.retraceTarget = targetNode.parent;
         };
 
         this.adjacentNodes = function(targetNode){
@@ -121,7 +125,7 @@ cc.Class({
                     this.iteratePathfinding();
                     break;
                 case "retracingPath":
-                    //this.retracePath();
+                    this.retracePath(this.retraceTarget);
                     break;    
             }
             this.updateCounter -= this.updateSpeed;

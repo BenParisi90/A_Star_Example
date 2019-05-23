@@ -19,6 +19,11 @@ cc.Class({
             type: cc.Prefab
         },
 
+        retracePrefab:{
+            default:null,
+            type:cc.Prefab
+        },
+
         mazeContainer:{
             default: null,
             type: cc.Node
@@ -39,11 +44,9 @@ cc.Class({
             var row = 0;
             var mazeData = this.mazeModel.maze;
             while(row < mazeData.length){
-                console.log("new row");
                 var col = 0;
                 while(col < mazeData[row].length){
                     var targetNode = mazeData[row][col];
-                    //console.log(col + ", " + row + " = " + targetNode);
                     if(col == 0 && targetNode.leftWall){
                         this.makeWall(
                             col * this.nodeWidth - (this.nodeWidth /2),
@@ -86,12 +89,12 @@ cc.Class({
             node.parent = this.mazeContainer;
             node.setPosition(xPos, yPos);
             node.setRotation(rot);
-        }
+        };
 
-        this.turnOn = function(xIndex, yIndex){
-            var node = cc.instantiate(this.floorPrefab);
+        this.turnOn = function(xIndex, yIndex, targetPrefab){
+            var node = cc.instantiate(targetPrefab);
             node.parent = this.pathContainer;
             node.setPosition(xIndex * this.nodeWidth, yIndex * -this.nodeWidth);
-        }
+        };
     }
 });
