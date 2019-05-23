@@ -14,7 +14,17 @@ cc.Class({
             type: cc.Prefab
         },
 
-        mazeView:{
+        floorPrefab: {
+            default: null,
+            type: cc.Prefab
+        },
+
+        mazeContainer:{
+            default: null,
+            type: cc.Node
+        },
+
+        pathContainer:{
             default: null,
             type: cc.Node
         }
@@ -33,7 +43,7 @@ cc.Class({
                 var col = 0;
                 while(col < mazeData[row].length){
                     var targetNode = mazeData[row][col];
-                    console.log(col + ", " + row + " = " + targetNode);
+                    //console.log(col + ", " + row + " = " + targetNode);
                     if(col == 0 && targetNode.leftWall){
                         this.makeWall(
                             col * this.nodeWidth - (this.nodeWidth /2),
@@ -62,7 +72,7 @@ cc.Class({
                             0
                         );
                         var node = cc.instantiate(this.wallPrefab);
-                        node.parent = this.mazeView;
+                        node.parent = this.mazeContainer;
                         node.setPosition(col * this.nodeWidth, -row * this.nodeWidth - (this.nodeWidth /2));
                     }
                     col++;
@@ -73,9 +83,15 @@ cc.Class({
 
         this.makeWall = function(xPos, yPos, rot){
             var node = cc.instantiate(this.wallPrefab);
-            node.parent = this.mazeView;
+            node.parent = this.mazeContainer;
             node.setPosition(xPos, yPos);
             node.setRotation(rot);
+        }
+
+        this.turnOn = function(xIndex, yIndex){
+            var node = cc.instantiate(this.floorPrefab);
+            node.parent = this.pathContainer;
+            node.setPosition(xIndex * this.nodeWidth, yIndex * -this.nodeWidth);
         }
     }
 });
