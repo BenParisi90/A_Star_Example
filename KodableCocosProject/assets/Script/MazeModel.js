@@ -1,102 +1,89 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
 var mazeModel = cc.Class({
     extends: cc.Component,
-    
-    
 
     properties: {
         
-
-        
     },
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {},
-
-    start () {
-        console.log(this);
+    onLoad () {
+        console.log("on load for maze model");
     },
 
-    // update (dt) {},
-});
+    ctor(){
+        this.maze = [[]];
 
-module.exports = {
-    maze: [[]],
+        this.initMazeNode = function(res, mazeCharacterWidth, i, col, row){
+            var nodeWidth = 3;
+            var newNode = {};
+            newNode.col = col;
+            newNode.row = row;
+            newNode.topWall = res[i + 1] == "-"
+            newNode.leftWall = res[i + mazeCharacterWidth] == "|";
+            newNode.rightWall = res[i + mazeCharacterWidth + nodeWidth] == "|";
+            newNode.bottomWall = res[i + (mazeCharacterWidth * 2) + 1] == "-";
+            return newNode;
+    
+        };
 
-    initMazeNode: function(res, mazeWidth, i, col, row){
-        var nodeWidth = 3;
-        var newNode = {};
-        newNode.col = col;
-        newNode.row = row;
-        newNode.topWall = res[i + 1] == "-"
-        newNode.leftWall = res[i + mazeWidth] == "|";
-        newNode.rightWall = res[i + mazeWidth + nodeWidth] == "|";
-        newNode.bottomWall = res[i + (mazeWidth * 2) + 1] == "-";
-        return newNode;
+        this.loadMaze = function(url, gameController){
 
-    },
-
-    loadMaze: function(url, modelScope){
-
-        var filePath = cc.url.raw("resources/maze.txt");
-        cc.loader.load( filePath, function( err, res)
-        {
-            var newMaze = [[]];
-            if(err == null)
+            var filePath = cc.url.raw(url);
+            cc.loader.load( filePath, function( err, res)
             {
-                console.log(res);
-                //populate maze model
-                var i = 0;
-                var mazeWidthFinished = false;
-                
-                var mazeWidth = 0;
-                var mazeHeight = 0;
-                
-                var currentRow = 0;
-                while(i < res.length - mazeWidth)
+                var newMaze = [[]];
+                if(err == null)
                 {
-                    if(!mazeWidthFinished && res[i] == " ")
-                    {
-                        mazeWidth = i;
-                        mazeHeight = res.length / mazeWidth;
-                        mazeWidthFinished = true;
-                    }
-                    switch(res[i]){
-                        case "+":
+                    console.log(res);
+                    //populate maze model
+                    var i = 0;
+                    var mazeWidthFinished = false;
+                    
+                    var mazeWidth = 0;
+                    var mazeHeight = 0;
+                    var mazeCharacterWidth = 0;
+                    var currentRow = 0;
+                    //determine width and character width of maze
+                    while(res[i] != " "){
+                        if(res[i] == "+"){
                             mazeWidth++;
-                            var currentCol = newMaze[currentRow].length - 1;
-                            newMaze[currentRow].push(modelScope.initMazeNode(res, mazeWidth, i, currentCol, currentRow));
-
-                            break;
-                        case " ": 
-                            //if we are at the end of a row, and not at the end of the maze, and on an even number row
-                            if(i % mazeWidth == 0 && i < res.length - 1){
+                        }
+                        i++;
+                    }
+                    mazeWidth--;
+                    mazeCharacterWidth = i;
+                    i = 0;
+                    while(i < res.length - (mazeCharacterWidth*2) - 1)
+                    {
+                        //console.log(res[i]);
+                        if(res[i] == "+"){
+                            if(newMaze[currentRow].length < mazeWidth)
+                            {
+                                //console.log("new node");
+                                var currentCol = newMaze[currentRow].length - 1;
+                                newMaze[currentRow].push(gameController.mazeModel.initMazeNode(res, mazeCharacterWidth, i, currentCol, currentRow));
+                            }
+                            else
+                            {
+                                //console.log("new row");
                                 newMaze.push([]);
                                 currentRow ++;
                             }
-                            break;
+                        }       
+                        i++;
                     }
-                        
-                    i++;
+                    
                 }
-                
-            }
-            else
-            {
-                console.log(err);
-            }
-            modelScope.maze = newMaze;            
-            
-        });
+                else
+                {
+                    console.log(err);
+                }
+                gameController.mazeModel.maze = newMaze;            
+                gameController.loadMazeComplete();
+            });
+        };
+    },
+
+    start () {
+        console.log(this);
     }
-}
+});
