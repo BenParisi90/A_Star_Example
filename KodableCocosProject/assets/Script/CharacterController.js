@@ -1,9 +1,12 @@
 var MazeView = require("MazeView");
+var MazeModel = require("MazeModel");
 
 cc.Class({
     extends: cc.Component,
 
     properties: {
+        timeToMoveOneUnit: .5,
+
         characterNode:{
             default:null,
             type:cc.Node
@@ -12,6 +15,11 @@ cc.Class({
         mazeView:{
             default:null,
             type:MazeView
+        },
+
+        mazeModel:{
+            default:null,
+            type:MazeModel
         }
     },
 
@@ -21,14 +29,29 @@ cc.Class({
         this.beginCharacterAnimation = function(characterPath)
         {
             this.path = characterPath;
-            this.moveChacter();
+            this.characterIndex = this.path.length - 1;
+            this.moveCharacter();
         };
 
-        this.moveChacter = function(){
-            this.characterIndex ++;
+        this.moveCharacter = function(){
+            this.characterIndex--;
             var targetNode = this.path[this.characterIndex];
-            var targetPos = cc.v2(targetNode.col * this.mazeView.nodeWidth, targetNode.row * this.mazeView.nodeWidth);
-            console.log("move character");
+            if(this.characterIndex >= 0)
+            {
+                var targetPos = cc.v2(targetNode.col * this.mazeView.nodeWidth, -targetNode.row * this.mazeView.nodeWidth);
+                cc.tween(this.characterNode)
+                    .to(this.timeToMoveOneUnit, { position: targetPos})
+                    // This callback function is not called until the preceding action has been performed
+                    .call(() => { 
+                        cc.callFunc(this.moveCharacter());
+                    })
+                    .start()
+            }
+            else
+            {
+                console.log("character movement complete");
+            }
+            
         };
     },
 

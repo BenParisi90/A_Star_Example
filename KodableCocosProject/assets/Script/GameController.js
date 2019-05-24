@@ -35,7 +35,6 @@ cc.Class({
         }
 
         this.solveMazeComplete = function(characterPath){
-            console.log("game controller - path complete");
             this.characterController.beginCharacterAnimation(characterPath);
         }
     },

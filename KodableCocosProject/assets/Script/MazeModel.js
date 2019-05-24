@@ -26,9 +26,9 @@ var mazeModel = cc.Class({
             newNode.parent = null;
             newNode.col = col;
             newNode.row = row;
-            newNode.g = null;//Math.abs(this.startX - col) + Math.abs(this.startY - row);
-            newNode.h = null;//Math.abs(this.endX - col) + Math.abs(this.endY - row);
-            newNode.f = 9999999;//newNode.g + newNode.h;
+            newNode.g = null;
+            newNode.h = null;
+            newNode.f = 9999999;
             newNode.topWall = res[i + 1] == "-"
             newNode.leftWall = res[i + mazeCharacterWidth] == "|";
             newNode.rightWall = res[i + mazeCharacterWidth + nodeWidth] == "|";

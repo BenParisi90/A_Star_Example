@@ -88,7 +88,7 @@ cc.Class({
             var node = cc.instantiate(this.wallPrefab);
             node.parent = this.mazeContainer;
             node.setPosition(xPos, yPos);
-            node.setRotation(rot);
+            node.angle = rot;
         };
 
         this.turnOn = function(xIndex, yIndex, targetPrefab){
