@@ -41,7 +41,6 @@ cc.Class({
                 var targetPos = cc.v2(targetNode.col * this.mazeView.nodeWidth, -targetNode.row * this.mazeView.nodeWidth);
                 cc.tween(this.characterNode)
                     .to(this.timeToMoveOneUnit, { position: targetPos})
-                    // This callback function is not called until the preceding action has been performed
                     .call(() => { 
                         cc.callFunc(this.moveCharacter());
                     })
@@ -53,15 +52,6 @@ cc.Class({
             }
             
         };
-    },
+    }
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {},
-
-    start () {
-
-    },
-
-    // update (dt) {},
 });

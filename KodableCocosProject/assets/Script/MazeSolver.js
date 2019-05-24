@@ -1,6 +1,5 @@
 var MazeView = require("MazeView");
 var MazeModel = require("MazeModel");
-var GameController = require("GameController");
 
 cc.Class({
     extends: cc.Component,
@@ -41,7 +40,6 @@ cc.Class({
             var current = this.lowestFNode(this.open);
             this.mazeView.turnOn(current.col, current.row, this.mazeView.floorPrefab);
             this.moveNodeToClosed(current);
-            //console.log("current = " + current.col + "," + current.row);
 
             if(current == this.mazeModel.endNode){
                 console.log("path to end node found");

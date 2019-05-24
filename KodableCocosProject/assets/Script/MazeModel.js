@@ -5,10 +5,6 @@ var mazeModel = cc.Class({
         
     },
 
-    onLoad () {
-        console.log("on load for maze model");
-    },
-
     ctor(){
         this.maze = [[]];
         this.startX = 0;
@@ -67,11 +63,9 @@ var mazeModel = cc.Class({
                     i = 0;
                     while(i < res.length - (mazeCharacterWidth*2) - 1)
                     {
-                        //console.log(res[i]);
                         if(res[i] == "+"){
                             if(newMaze[currentRow].length < mazeModel.mazeWidth)
                             {
-                                //console.log("new node");
                                 var currentCol = newMaze[currentRow].length;
                                 newMaze[currentRow].push(mazeModel.initMazeNode(res, mazeCharacterWidth, i, currentCol, currentRow));
                                 
@@ -79,7 +73,6 @@ var mazeModel = cc.Class({
                             }
                             else
                             {
-                                //console.log("new row");
                                 newMaze.push([]);
                                 mazeModel.mazeHeight ++;
                                 currentRow ++;
