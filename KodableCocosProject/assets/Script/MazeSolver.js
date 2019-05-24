@@ -1,5 +1,6 @@
 var MazeView = require("MazeView");
 var MazeModel = require("MazeModel");
+var GameController = require("GameController");
 
 cc.Class({
     extends: cc.Component,
@@ -21,13 +22,17 @@ cc.Class({
 
     ctor: function(){
         this.state = "idle";
+        this.gameController = null;
         this.retraceTarget = null;
         this.updateCounter = this.updateSpeed;
+        this.characterPath = [];
 
-        this.solveMaze = function(){
+        this.solveMaze = function(gameController){
             this.state = "findingPath";
+            this.gameController = gameController;
             this.open = [];
             this.closed = [];
+            this.characterPath = [];
             this.open.push(this.mazeModel.maze[this.mazeModel.startY][this.mazeModel.startX]);
         };
 
@@ -64,9 +69,11 @@ cc.Class({
 
         this.retracePath = function(targetNode){
             this.mazeView.turnOn(targetNode.col, targetNode.row, this.mazeView.retracePrefab);
+            this.characterPath.push(targetNode);
             if(targetNode == this.mazeModel.startNode){
                 console.log("found way back to start!");
-                this.state = "animateCharacter";
+                this.state = "complete";
+                this.gameController.solveMazeComplete(this.characterPath);
             }
             this.retraceTarget = targetNode.parent;
         };
