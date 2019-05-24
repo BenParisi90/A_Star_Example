@@ -25,10 +25,16 @@ cc.Class({
         characterController:{
             default:null,
             type:CharacterController
+        },
+
+        playButton:{
+            default:null,
+            type:cc.Node
         }
     },
 
     ctor: function(){
+        this.state = "idle";
         this.loadMazeComplete = function(){
             this.mazeView.renderMaze();
             this.mazeSolver.solveMaze(this);
@@ -40,7 +46,9 @@ cc.Class({
     },
     
     start () {
-
-        this.mazeModel.loadMaze("resources/maze.txt", this);
+        this.playButton.on(cc.Node.EventType.MOUSE_DOWN, function (event) {
+            this.playButton.active = false;
+            this.mazeModel.loadMaze("resources/maze.txt", this);
+          }, this);
     }
 });
